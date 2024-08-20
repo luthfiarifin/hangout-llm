@@ -91,15 +91,6 @@ def get_data_from_cids(cids):
                 results.append(item)
     return results
 
-def get_data_from_metadatas(metadatas):
-    data = json.load(open("./data/destinations.json"))
-    results = []
-    for metadata in metadatas:
-        for item in data:
-            if item["cid"] == metadata["id"]:
-                results.append(item)
-    return results
-
 def query(
     day: str,
     country: Country,
