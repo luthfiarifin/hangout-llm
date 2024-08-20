@@ -19,7 +19,11 @@ async def root(
 async def chat_handler(
     histories: ChatMessages,
     query: str,
+    day: str,
     country: Country,
+    startTime: str,
+    endTime: str,
+    address: str,
 ):
-    response = chat_query(histories, query, country)
+    response = chat_query(histories, query, day, country, startTime, endTime, address)
     return response

@@ -132,7 +132,11 @@ def query(
 def chat_query(
     messages: ChatMessages,
     query: str,
+    day: str,
     country: Country,
+    startTime: str,
+    endTime: str,
+    address: str,
 ):
     filters = MetadataFilters(
         filters=[
@@ -150,7 +154,7 @@ def chat_query(
     ) for message in messages.histories]
     
     histories.insert(0, ChatMessage(
-        content="You are a travel itinerary planner. Create a romantic and memorable dating itinerary for a couple visiting. Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a romantic atmosphere, including suggestions for dining, leisure, and unique experiences. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.",
+        content="You are a travel itinerary planner. Create a romantic and memorable dating itinerary for a couple visiting {address} on on {day}. The itinerary should cover the time range from {startTime} to {endTime}. Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a romantic atmosphere, including suggestions for dining, leisure, and unique experiences. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.",
         role="system",
         additional_kwargs={}
     ))
