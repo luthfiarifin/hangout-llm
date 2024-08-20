@@ -1,13 +1,20 @@
-FROM python:3.9
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-WORKDIR /code
+# Set the working directory in the container
+WORKDIR /app
 
-COPY ./requirements.txt /code/requirements.txt
+# Copy the requirements file into the container at /app
+COPY requirements.txt /app/
 
-RUN pip install "fastapi[standard]"
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+# Copy the current directory contents into the container at /app
+COPY . /app/
 
-COPY ./main.py /code/
+# Make port 80 available to the world outside this container
+EXPOSE 80
 
+# Run main.py when the container launches
 CMD ["fastapi", "dev", "main.py", "--port", "80"]
