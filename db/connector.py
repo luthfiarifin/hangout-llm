@@ -4,7 +4,6 @@ import json
 from sqlalchemy import URL
 from llama_index.core import Document, StorageContext, VectorStoreIndex, Settings
 from llama_index.vector_stores.tidbvector import TiDBVectorStore
-from llama_index.embeddings.huggingface_api import HuggingFaceInferenceAPIEmbedding
 from llama_index.embeddings.gemini import GeminiEmbedding
 from llama_index.llms.groq import Groq
 from llama_index.core.vector_stores import (
