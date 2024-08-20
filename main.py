@@ -14,3 +14,12 @@ async def root(
 ):
     response = query(day, country, startTime, endTime, address)
     return response
+
+@app.post("/chat")
+async def chat_handler(
+    histories: ChatMessages,
+    query: str,
+    country: Country,
+):
+    response = chat_query(histories, query, country)
+    return response

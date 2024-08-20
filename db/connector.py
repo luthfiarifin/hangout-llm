@@ -1,7 +1,9 @@
 import os
 from dotenv import load_dotenv 
 import json
+from llama_cloud import ChatMessage
 from sqlalchemy import URL
+from llama_index.core.chat_engine.types import ChatMode
 from llama_index.core import Document, StorageContext, VectorStoreIndex, Settings
 from llama_index.vector_stores.tidbvector import TiDBVectorStore
 from llama_index.embeddings.gemini import GeminiEmbedding
@@ -12,6 +14,7 @@ from llama_index.core.vector_stores import (
 )
 
 from enums.country import Country
+from models.chat_message import ChatMessages
 
 load_dotenv() 
 
@@ -124,4 +127,52 @@ def query(
     return {
         "response": response.response,
         "metadata": get_data_from_cids(list(set(metadata_ids + source_node_ids))),
+    }
+
+def chat_query(
+    messages: ChatMessages,
+    query: str,
+    country: Country,
+):
+    filters = MetadataFilters(
+        filters=[
+                MetadataFilter(
+                    key="complete_address.country",
+                    value=[country.value],
+                )
+            ]
+    )
+    
+    histories = [ChatMessage(
+        content=message.content, 
+        role=message.role,
+        additional_kwargs={}
+    ) for message in messages.histories]
+    
+    histories.insert(0, ChatMessage(
+        content="You are a travel itinerary planner. Create a romantic and memorable dating itinerary for a couple visiting. Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a romantic atmosphere, including suggestions for dining, leisure, and unique experiences. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.",
+        role="system",
+        additional_kwargs={}
+    ))
+    
+    histories.append(ChatMessage(
+        content=query,
+        role="user",
+        additional_kwargs={}
+    ))
+    
+    query_engine = index.as_chat_engine(
+        filters=filters,
+        chat_mode=ChatMode.CONTEXT, 
+        llm=Settings.llm, 
+        verbose=True,
+    )
+    response = query_engine.chat(query, chat_history=histories)
+    source_node_ids = [node.node.metadata["id"] for node in response.source_nodes]
+
+    print(source_node_ids)
+   
+    return {
+        "response": response.response,
+        "metadata": get_data_from_cids(source_node_ids),
     }
