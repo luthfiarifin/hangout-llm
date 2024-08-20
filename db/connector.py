@@ -122,7 +122,7 @@ def query(
     )
     response = query_engine.query(f"""
         You are a travel itinerary planner. Create a romantic and memorable dating itinerary for a couple visiting {address} on on {day}. The itinerary should cover the time range from {startTime} to {endTime}.
-        Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a romantic atmosphere, including suggestions for dining, leisure, and unique experiences. Please ensure that the venues are open during the specified time range and that the itinerary is feasible.
+        Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a romantic atmosphere, including suggestions for dining, leisure, and unique experiences. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.
     """)
     metadata_ids = [value["id"] for key, value in response.metadata.items()]
     source_node_ids = [node.node.metadata["id"] for node in response.source_nodes]
@@ -130,7 +130,4 @@ def query(
     print(metadata_ids)
     print(source_node_ids)
     
-    return {
-        "response": response.response,
-        "metadata": get_data_from_cids(list(set(metadata_ids + source_node_ids)))
-    }
+    return response
