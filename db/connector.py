@@ -121,4 +121,7 @@ def query(
     print(metadata_ids)
     print(source_node_ids)
     
-    return response
+    return {
+        "response": response.response,
+        "metadata": get_data_from_cids(list(set(metadata_ids + source_node_ids))),
+    }
