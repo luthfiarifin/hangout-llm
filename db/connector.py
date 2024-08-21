@@ -262,4 +262,4 @@ def create_prompt(
     return prompt.strip()
 
 def format_date(date_str, format_str):
-    return datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S.%fZ").strftime(format_str)
+    return datetime.strptime(date_str, "%Y-%m-%d").strftime(format_str)
