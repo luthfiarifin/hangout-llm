@@ -107,9 +107,9 @@ def query(
     endTime: str,
     address: str,
     lat: float,
-    lon: float,
+    lng: float,
 ):
-    return query_retry_handler(date, country, startTime, endTime, address, lat, lon)  
+    return query_retry_handler(date, country, startTime, endTime, address, lat, lng)  
     
 def query_retry_handler(
     date: str,
@@ -118,7 +118,7 @@ def query_retry_handler(
     endTime: str,
     address: str,
     lat: float,
-    lon: float,
+    lng: float,
     retry = 0,
 ): 
     try:
@@ -131,7 +131,7 @@ def query_retry_handler(
             ]
         )
 
-        weather_data = get_weather_data(lat, lon, date, startTime, endTime)
+        weather_data = get_weather_data(lat, lng, date, startTime, endTime)
         weather_prompt = summarize_weather_data(weather_data)
 
         query_engine = index.as_query_engine(
@@ -153,7 +153,7 @@ def query_retry_handler(
     except Exception as e:
         if retry < 3:
             print(f'retrying {retry}')
-            return query_retry_handler(date, country, startTime, endTime, address, lat, lon, retry + 1)
+            return query_retry_handler(date, country, startTime, endTime, address, lat, lng, retry + 1)
         else:
             print(e)
             return {

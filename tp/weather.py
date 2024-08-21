@@ -3,13 +3,13 @@ import requests
 
 def get_weather_data(
     lat: float,
-    lon: float,
+    lng: float,
     date: str,
     startTime: str,
     endTime: str,
 ):
     try:
-        response = requests.get(f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{lat},{lon}/{date}?key={os.getenv('VISUAL_CROSSING_API_KEY')}")
+        response = requests.get(f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{lat},{lng}/{date}?key={os.getenv('VISUAL_CROSSING_API_KEY')}")
         hourly_data = response.json()["days"][0]["hours"]
         weather_data_list = []
         for item in hourly_data:
