@@ -4,17 +4,17 @@ from enums.country import Country
 
 app = FastAPI()
 
-@app.get("/")
-async def root(
+@app.post("/generate")
+async def generate(
     date: str,
     country: Country,
     startTime: str,
     endTime: str,
     address: str,
     lat: float,
-    lon: float,
+    lng: float,
 ):
-    response = query(date, country, startTime, endTime, address, lat, lon)
+    response = query(date, country, startTime, endTime, address, lat, lng)
     return response
 
 @app.post("/chat")
