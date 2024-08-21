@@ -101,9 +101,9 @@ def query(
     endTime: str,
     address: str,
 ):
-    return query_handler(day, country, startTime, endTime, address)  
+    return query_retry_handler(day, country, startTime, endTime, address)  
     
-def query_handler(
+def query_retry_handler(
     day: str,
     country: Country,
     startTime: str,
@@ -141,7 +141,7 @@ def query_handler(
     except Exception as e:
         if retry < 3:
             print(f'retrying {retry}')
-            return query_handler(day, country, startTime, endTime, address, retry + 1)
+            return query_retry_handler(day, country, startTime, endTime, address, retry + 1)
         else:
             return {"response": "An error occurred. Please try again later."}
 
@@ -196,3 +196,22 @@ def chat_query(
         "response": response.response,
         "metadata": get_data_from_cids(source_node_ids),
     }
+
+def chat_retry_handler(
+    messages: ChatMessages,
+    query: str,
+    day: str,
+    country: Country,
+    startTime: str,
+    endTime: str,
+    address: str,
+    retry = 0,
+):
+    try:
+        return chat_query(messages, query, day, country, startTime, endTime, address)
+    except Exception as e:
+        if retry < 3:
+            print(f'retrying {retry}')
+            return chat_retry_handler(messages, query, day, country, startTime, endTime, address, retry + 1)
+        else:
+            return {"response": "An error occurred. Please try again later."}
