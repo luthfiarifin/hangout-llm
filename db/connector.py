@@ -115,8 +115,7 @@ def query(
         similarity_top_k=2,
     )
     response = query_engine.query(f"""
-        You are a travel itinerary planner. Create a romantic and memorable dating itinerary for a couple visiting {address} on on {day}. The itinerary should cover the time range from {startTime} to {endTime}.
-        Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a romantic atmosphere, including suggestions for dining, leisure, and unique experiences. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.
+       You are a travel itinerary planner. Create a memorable and engaging sightseeing itinerary for visitors to {address} on {day}. The itinerary should cover the time range from {startTime} to {endTime}. Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a leisurely and enjoyable experience, including suggestions for dining, leisure, and unique sightseeing spots. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.
     """)
     metadata_ids = [value["id"] for key, value in response.metadata.items()]
     source_node_ids = [node.node.metadata["id"] for node in response.source_nodes]
@@ -154,7 +153,7 @@ def chat_query(
     ) for message in messages.histories]
     
     histories.insert(0, ChatMessage(
-        content="You are a travel itinerary planner. Create a romantic and memorable dating itinerary for a couple visiting {address} on on {day}. The itinerary should cover the time range from {startTime} to {endTime}. Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a romantic atmosphere, including suggestions for dining, leisure, and unique experiences. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.",
+        content="You are a travel itinerary planner. Create a memorable and engaging sightseeing itinerary for visitors to {address} on {day}. The itinerary should cover the time range from {startTime} to {endTime}. Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a leisurely and enjoyable experience, including suggestions for dining, leisure, and unique sightseeing spots. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.",
         role="system",
         additional_kwargs={}
     ))
