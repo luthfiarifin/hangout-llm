@@ -2,8 +2,7 @@ import os
 from dotenv import load_dotenv 
 import json
 from llama_cloud import ChatMessage
-import requests
-from sqlalchemy import URL
+from sqlalchemy import URL, create_engine
 from llama_index.core.chat_engine.types import ChatMode
 from llama_index.core import Document, StorageContext, VectorStoreIndex, Settings
 from llama_index.vector_stores.tidbvector import TiDBVectorStore
@@ -32,6 +31,8 @@ tidb_connection_url = URL(
     database="test",
     query={"ssl_verify_cert": False, "ssl_verify_identity": True},
 )
+
+create_engine(tidb_connection_url, pool_recycle=3600)
 
 tidbvec = TiDBVectorStore(
     connection_string=tidb_connection_url,
