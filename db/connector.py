@@ -17,7 +17,8 @@ from enums.country import Country
 from models.chat_message import ChatMessages
 from tp.weather import (
     get_weather_data, 
-    summarize_weather_data
+    get_weather_calculation,
+    summarize_weather_data,
 )
 
 load_dotenv() 
@@ -132,7 +133,8 @@ def query_retry_handler(
         )
 
         weather_data = get_weather_data(lat, lng, date, startTime, endTime)
-        weather_prompt = summarize_weather_data(weather_data)
+        weather_calculation = get_weather_calculation(weather_data)
+        weather_prompt = summarize_weather_data(weather_calculation)
 
         query_engine = index.as_query_engine(
             filters=filters,
@@ -148,7 +150,8 @@ def query_retry_handler(
         return {
             "response": response.response,
             "metadata": get_data_from_cids(list(set(metadata_ids + source_node_ids))),
-            "weather": weather_data,
+            "weathers": weather_data,
+            "weather_calculation": weather_calculation,
         }
     except Exception as e:
         if retry < 3:

@@ -27,10 +27,10 @@ def get_weather_data(
     except Exception as e:
         print(e)
         return []
-
-def summarize_weather_data(weather_data_list):
+    
+def get_weather_calculation(weather_data_list):
     if not weather_data_list:
-        return ""
+        return 0
 
     avg_temp = sum(item['temp'] for item in weather_data_list) / len(weather_data_list)
     avg_feelslike = sum(item['feelslike'] for item in weather_data_list) / len(weather_data_list)
@@ -40,10 +40,21 @@ def summarize_weather_data(weather_data_list):
     avg_cloudcover = sum(item['cloudcover'] for item in weather_data_list) / len(weather_data_list)
     max_uvindex = max(item['uvindex'] for item in weather_data_list)
 
-    weather_summary = f"Average temperature: {avg_temp:.1f}°F (feels like {avg_feelslike:.1f}°F). "
-    weather_summary += f"Average precipitation probability: {avg_precipprob:.1f}%, with a maximum of {max_precipprob}%. "
-    weather_summary += f"Predominant conditions: {predominant_conditions}. "
-    weather_summary += f"Average cloud cover: {avg_cloudcover:.1f}%. "
-    weather_summary += f"Maximum UV index: {max_uvindex}."
+    return {
+        "avg_temp": avg_temp,
+        "avg_feelslike": avg_feelslike,
+        "avg_precipprob": avg_precipprob,
+        "max_precipprob": max_precipprob,
+        "predominant_conditions": predominant_conditions,
+        "avg_cloudcover": avg_cloudcover,
+        "max_uvindex": max_uvindex,
+    }
+
+def summarize_weather_data(calculation):
+    weather_summary = f"Average temperature: {calculation['avg_temp']:.1f}°F (feels like {calculation['avg_feelslike']:.1f}°F). "
+    weather_summary += f"Average precipitation probability: {calculation['avg_precipprob']:.1f}%, with a maximum of {calculation['max_precipprob']}%. "
+    weather_summary += f"Predominant conditions: {calculation['predominant_conditions']}. "
+    weather_summary += f"Average cloud cover: {calculation['avg_cloudcover']:.1f}%. "
+    weather_summary += f"Maximum UV index: {calculation['max_uvindex']}."
 
     return weather_summary
