@@ -101,32 +101,49 @@ def query(
     endTime: str,
     address: str,
 ):
-    filters = MetadataFilters(
+    return query_handler(day, country, startTime, endTime, address)  
+    
+def query_handler(
+    day: str,
+    country: Country,
+    startTime: str,
+    endTime: str,
+    address: str,
+    retry = 0,
+): 
+    try:
+        filters = MetadataFilters(
         filters=[
                 MetadataFilter(
                     key="complete_address.country",
                     value=[country.value],
                 )
             ]
-    )
-    
-    query_engine = index.as_query_engine(
-        filters=filters,
-        similarity_top_k=2,
-    )
-    response = query_engine.query(f"""
-       You are a travel itinerary planner. Create a memorable and engaging sightseeing itinerary for visitors to {address} on {day}. The itinerary should cover the time range from {startTime} to {endTime}. Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a leisurely and enjoyable experience, including suggestions for dining, leisure, and unique sightseeing spots. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.
-    """)
-    metadata_ids = [value["id"] for key, value in response.metadata.items()]
-    source_node_ids = [node.node.metadata["id"] for node in response.source_nodes]
-    
-    print(metadata_ids)
-    print(source_node_ids)
-    
-    return {
-        "response": response.response,
-        "metadata": get_data_from_cids(list(set(metadata_ids + source_node_ids))),
-    }
+        )
+
+        query_engine = index.as_query_engine(
+            filters=filters,
+            similarity_top_k=2,
+        )
+        response = query_engine.query(f"""
+           You are a travel itinerary planner. Create a memorable and engaging sightseeing itinerary for visitors to {address} on {day}. The itinerary should cover the time range from {startTime} to {endTime}. Ensure that the itinerary is well-paced, with time allocated for each activity, including travel time between locations. The itinerary should cater to a leisurely and enjoyable experience, including suggestions for dining, leisure, and unique sightseeing spots. Please ensure that the venues are open during the specified time range and that the itinerary is feasible. Do not include any locations, activities, or suggestions that are not present in the provided data. The itinerary must include at least three distinct destinations.
+        """)
+        metadata_ids = [value["id"] for key, value in response.metadata.items()]
+        source_node_ids = [node.node.metadata["id"] for node in response.source_nodes]
+
+        print(metadata_ids)
+        print(source_node_ids)
+
+        return {
+            "response": response.response,
+            "metadata": get_data_from_cids(list(set(metadata_ids + source_node_ids))),
+        }
+    except Exception as e:
+        if retry < 3:
+            print(f'retrying {retry}')
+            return query_handler(day, country, startTime, endTime, address, retry + 1)
+        else:
+            return {"response": "An error occurred. Please try again later."}
 
 def chat_query(
     messages: ChatMessages,
