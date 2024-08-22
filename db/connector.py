@@ -92,6 +92,13 @@ Settings.embed_model = GeminiEmbedding(
     
 index = connect()
 
+def get_destination_by_cid(cid):
+    data = json.load(open("./data/destinations.json"))
+    for item in data:
+        if item["cid"] == cid:
+            return item
+    return None
+
 def get_data_from_cids(cids):
     data = json.load(open("./data/destinations.json"))
     results = []

@@ -29,3 +29,8 @@ async def chat_handler(
 ):
     response = chat_query(histories, query, date, country, startTime, endTime, address)
     return response
+
+@app.get('/destinations/{cid}')
+async def get_destination_detail(cid: str):
+    response = get_destination_by_cid(cid)
+    return response
